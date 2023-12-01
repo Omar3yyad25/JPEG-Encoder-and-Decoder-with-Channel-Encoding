@@ -14,14 +14,17 @@ def read_image(file_path):
 def image_blocks(image):
     height, width = image.shape
     blocks = []
-    # divide block 8x8 and append to blocks, if the block is not 8x8, append 0 to make it 8x8
     for i in range(0, height, 8):
         for j in range(0, width, 8):
             block = image[i:i+8, j:j+8]
             if block.shape != (8, 8):
-                block = np.pad(block, ((0, 8-block.shape[0]), (0, 8-block.shape[1])), 'constant')
-        blocks.append(block)
-    return blocks 
+                # If the block is not exactly 8x8, pad it with zeros
+                padded_block = np.zeros((8, 8), dtype=block.dtype)
+                padded_block[:block.shape[0], :block.shape[1]] = block
+                block = padded_block
+            blocks.append(block)
+    return blocks
+
 
 def zigzag_indices ():
     indices = [(i, j) for i in range(8) for j in range(8)]
@@ -49,11 +52,33 @@ def dct_2d(block):
 
     return dct_matrix
 
-image_path = 'image.jpeg'
-image = read_image(image_path)
-blocks = image_blocks(image)
+def main():
+    image_path = 'image.jpeg'
+    image = read_image(image_path)
+    blocks = image_blocks(image)
+    for i in range (len(blocks)):
+        blocks[i] = dct_2d(blocks[i])
 
-for i in range (len(blocks)):
-    blocks[i] = dct_2d(blocks[i])
+    # Low_Compression_Quantizer = np.array
+    # ([[1, 1, 1, 1, 1, 2, 2, 4],
+    # [1, 1, 1, 1, 1, 2, 2, 4],
+    # [1, 1, 1, 1, 2, 2, 2, 4],
+    # [1, 1, 1, 1, 2, 2, 4, 8],
+    # [1, 1, 2, 2, 2, 2, 4, 8],
+    # [2, 2, 2, 2, 2, 4, 8, 8],
+    # [2, 2, 2, 4, 4, 8, 8, 16],
+    # [4, 4, 4, 4, 8, 8, 16, 16]])
+    
+    #High_Compression_Quantizer= np.array([
+    # [1, 2, 4, 8, 16, 32, 64, 128],
+    # [2, 4, 4, 8, 16, 32, 64, 128],
+    # [4, 4, 8, 16, 32, 64, 128, 128],
+    # [8, 8, 16, 32, 64, 128, 128, 256],
+    # [16, 16, 32, 64, 128, 128, 256, 256],
+    # [32, 32, 64, 128, 128, 256, 256, 256],
+    # [64, 64, 128, 128, 256, 256, 256, 256],
+    # [128, 128, 128, 256, 256, 256,256,256]
+    # ])
 
-print (zigzag_indices())
+if __name__ == '__main__':
+    main()
