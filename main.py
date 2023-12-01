@@ -56,29 +56,50 @@ def main():
     image_path = 'image.jpeg'
     image = read_image(image_path)
     blocks = image_blocks(image)
+    
+    #Applying DCT to each block
     for i in range (len(blocks)):
         blocks[i] = dct_2d(blocks[i])
 
-    # Low_Compression_Quantizer = np.array
-    # ([[1, 1, 1, 1, 1, 2, 2, 4],
-    # [1, 1, 1, 1, 1, 2, 2, 4],
-    # [1, 1, 1, 1, 2, 2, 2, 4],
-    # [1, 1, 1, 1, 2, 2, 4, 8],
-    # [1, 1, 2, 2, 2, 2, 4, 8],
-    # [2, 2, 2, 2, 2, 4, 8, 8],
-    # [2, 2, 2, 4, 4, 8, 8, 16],
-    # [4, 4, 4, 4, 8, 8, 16, 16]])
+    #Quantization
+    Low_Compression_Quantizer = np.array(
+    [[1, 1, 1, 1, 1, 2, 2, 4],
+      [1, 1, 1, 1, 1, 2, 2, 4],
+      [1, 1, 1, 1, 2, 2, 2, 4],
+      [1, 1, 1, 1, 2, 2, 4, 8],
+      [1, 1, 2, 2, 2, 2, 4, 8],
+      [2, 2, 2, 2, 2, 4, 8, 8],
+      [2, 2, 2, 4, 4, 8, 8, 16],
+      [4, 4, 4, 4, 8, 8, 16, 16]
+    ])
     
-    #High_Compression_Quantizer= np.array([
-    # [1, 2, 4, 8, 16, 32, 64, 128],
-    # [2, 4, 4, 8, 16, 32, 64, 128],
-    # [4, 4, 8, 16, 32, 64, 128, 128],
-    # [8, 8, 16, 32, 64, 128, 128, 256],
-    # [16, 16, 32, 64, 128, 128, 256, 256],
-    # [32, 32, 64, 128, 128, 256, 256, 256],
-    # [64, 64, 128, 128, 256, 256, 256, 256],
-    # [128, 128, 128, 256, 256, 256,256,256]
-    # ])
+    High_Compression_Quantizer= np.array([
+    [1, 2, 4, 8, 16, 32, 64, 128],
+    [2, 4, 4, 8, 16, 32, 64, 128],
+    [4, 4, 8, 16, 32, 64, 128, 128],
+    [8, 8, 16, 32, 64, 128, 128, 256],
+    [16, 16, 32, 64, 128, 128, 256, 256],
+    [32, 32, 64, 128, 128, 256, 256, 256],
+    [64, 64, 128, 128, 256, 256, 256, 256],
+    [128, 128, 128, 256, 256, 256,256,256]
+    ])
 
+    # Apply the Quantization step 
+    # Divide each each block by the quantization matrix
+    # Show to user which quantization matrix he wants to use
+    # 1 for low compression and 2 for high compression
+    print ("Please enter 1 for low compression and 2 for high compression")
+    compression = input()
+    if compression == '1':
+        for i in range (len(blocks)):
+            blocks[i] = np.divide(blocks[i], Low_Compression_Quantizer)
+    elif compression == '2':
+        for i in range (len(blocks)):
+            blocks[i] = np.divide(blocks[i], High_Compression_Quantizer)
+    else:
+        print ("Wrong input")
+        exit()
+    
+    
 if __name__ == '__main__':
     main()
