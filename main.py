@@ -1,4 +1,5 @@
 from encoder import *
+from decoder import *
 
 def main():
     image_path = 'image.jpeg'
@@ -48,9 +49,16 @@ def main():
     
     #using zigzag indices to flatten each matrix into a vector and store all vectors in a list
     vectors = convert_2d_to_1d(blocks)
-    
     #Run length encoding
     encoded_vectors = run_length_encoding(vectors)
 
+    
+    
+    
+    # Apply Huffman code
+
+    # Decode Huffman code
+
+    # Run length decoding
 if __name__ == '__main__':
     main()
