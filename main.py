@@ -100,3 +100,6 @@ def main():
         print ("Wrong input")
         exit()
     
+    
+if __name__ == '__main__':
+    main()
