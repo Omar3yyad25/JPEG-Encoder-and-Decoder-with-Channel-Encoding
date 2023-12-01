@@ -31,6 +31,16 @@ def zigzag_indices ():
     indices.sort(key=lambda x: (x[0]+x[1], x[1]) if (x[0]+x[1]) % 2 == 0 else (x[1]+x[0], x[0]))
     return indices
 
+def convert_2d_to_1d(blocks):
+    zigzag = zigzag_indices()
+    vectors = []
+    for i in range (len(blocks)):
+        vector = []
+        for j in range (len(zigzag)):
+            vector.append(blocks[i][zigzag[j][0]][zigzag[j][1]])
+        vectors.append(vector)
+    return vectors
+
 def dct_basis(u , v):
     basis_matrix = np.zeros((8, 8))
     for x in range(8):
@@ -101,17 +111,8 @@ def main():
         exit()
     
     #using zigzag indices to flatten each matrix into a vector and store all vectors in a list
-    zigzag = zigzag_indices()
-    vectors = []
-    for i in range (len(blocks)):
-        vector = []
-        for j in range (len(zigzag)):
-            vector.append(blocks[i][zigzag[j][0]][zigzag[j][1]])
-        vectors.append(vector)
-
-
-        
-
+    
+    print (convert_2d_to_1d(blocks)[33])
     
 if __name__ == '__main__':
     main()
