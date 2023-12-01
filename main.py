@@ -100,6 +100,18 @@ def main():
         print ("Wrong input")
         exit()
     
+    #using zigzag indices to flatten each matrix into a vector and store all vectors in a list
+    zigzag = zigzag_indices()
+    vectors = []
+    for i in range (len(blocks)):
+        vector = []
+        for j in range (len(zigzag)):
+            vector.append(blocks[i][zigzag[j][0]][zigzag[j][1]])
+        vectors.append(vector)
+
+
+        
+
     
 if __name__ == '__main__':
     main()
