@@ -1,5 +1,9 @@
 from encoder import *
 from decoder import *
+from huffmanc import *
+from huffmandecoder import huffman_decode
+from huffencoder import huffman_encode
+from itertools import chain
 
 def main():
     image_path = 'image.jpeg'
@@ -35,8 +39,7 @@ def main():
 
     # Apply the Quantization step 
     # Divide each each block by the quantization matrix
-    print ("Please enter 1 for low compression and 2 for high compression")
-    compression = input()
+    compression = input("Please enter 1 for low compression and 2 for high compression")
     if compression == '1':
         for i in range (len(blocks)):
             blocks[i] = np.round(blocks[i]/ Low_Compression_Quantizer)
@@ -51,14 +54,13 @@ def main():
     vectors = convert_2d_to_1d(blocks)
     #Run length encoding
     encoded_vectors = run_length_encoding(vectors)
-
     
+    f = Huffman(list(chain.from_iterable(encoded_vectors)))
     
-    
-    # Apply Huffman code
+    encoded_data = huffman_encode(encoded_data , f.table)
+    decoded_result = huffman_decode(encoded_data, f.table)
 
-    # Decode Huffman code
 
-    # Run length decoding
+                
 if __name__ == '__main__':
     main()
