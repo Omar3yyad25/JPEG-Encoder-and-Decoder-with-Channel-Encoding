@@ -44,7 +44,7 @@ def image_blocks(image):
                 padded_block[:block.shape[0], :block.shape[1]] = block
                 block = padded_block
             blocks.append(block)
-    return blocks
+    return blocks , height, width
 
 
 def dct_basis(u , v):
