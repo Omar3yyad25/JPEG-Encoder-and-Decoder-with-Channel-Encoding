@@ -2,6 +2,28 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
+Low_Compression_Quantizer = np.array(
+[[1, 1, 1, 1, 1, 2, 2, 4],
+[1, 1, 1, 1, 1, 2, 2, 4],
+[1, 1, 1, 1, 2, 2, 2, 4],
+[1, 1, 1, 1, 2, 2, 4, 8],
+[1, 1, 2, 2, 2, 2, 4, 8],
+[2, 2, 2, 2, 2, 4, 8, 8],
+[2, 2, 2, 4, 4, 8, 8, 16],
+[4, 4, 4, 4, 8, 8, 16, 16]
+])
+    
+High_Compression_Quantizer= np.array([
+[1, 2, 4, 8, 16, 32, 64, 128],
+[2, 4, 4, 8, 16, 32, 64, 128],
+[4, 4, 8, 16, 32, 64, 128, 128],
+[8, 8, 16, 32, 64, 128, 128, 256],
+[16, 16, 32, 64, 128, 128, 256, 256],
+[32, 32, 64, 128, 128, 256, 256, 256],
+[64, 64, 128, 128, 256, 256, 256, 256],
+[128, 128, 128, 256, 256, 256,256,256]
+])
+
 def read_image(file_path):
     img = Image.open(file_path).convert('L')
     # plt.imshow(img, cmap='gray')
@@ -45,6 +67,22 @@ def dct_2d(block):
     dct_matrix[:, 0] = dct_matrix[:, 0]/2
 
     return dct_matrix
+
+def Quantization (blocks, QF):
+
+    # Apply the Quantization step 
+    # Divide each each block by the quantization matrix
+    if QF == '1':
+        for i in range (len(blocks)):
+            blocks[i] = np.round(blocks[i]/ Low_Compression_Quantizer)
+    elif QF == '2':
+        for i in range (len(blocks)):
+            blocks[i] = np.round(blocks[i]/ High_Compression_Quantizer)
+    else:
+        print ("Wrong input")
+        exit()
+
+    return blocks
 
 def zigzag_indices ():
     indices = [(i, j) for i in range(8) for j in range(8)]
