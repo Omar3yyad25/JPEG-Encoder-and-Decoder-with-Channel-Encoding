@@ -1,5 +1,7 @@
-from encoder import zigzag_indices, Low_Compression_Quantizer, High_Compression_Quantizer
+from encoder import zigzag_indices, Low_Compression_Quantizer, High_Compression_Quantizer, dct_basis
 import numpy as np
+from PIL import Image
+import matplotlib.pyplot as plt
 
 def run_length_decoding(vector):
     decoded_vector = []
@@ -35,7 +37,25 @@ def Dequantization(blocks, QF):
     
     return blocks
 
+def inverse_dct_2d(dequantized_block):
+    idct_matrix = np.zeros((8, 8)) 
+    for i in range (8):
+        for j in range (8):
+            basis_matrix = dct_basis(i,j)
+            idct_matrix[i][j] = np.sum(np.multiply(dequantized_block, basis_matrix))
 
+    return idct_matrix
 
+def reconstruct_image(decoded_blocks, image):
+    reconstructed_image = np.zeros((image.shape[0]+5, image.shape[1]+5))
+    index = 0
+    for i in range (0, image.shape[0], 8):
+        for j in range (0, image.shape[1], 8):
+            reconstructed_image[i:i+8, j:j+8] = decoded_blocks[index]
+            index += 1
+    #saving the reconstructed image
+    print ("Image reconstructed successfully")
+    plt.imshow(reconstructed_image, cmap='gray')
+    plt.show()
 
        

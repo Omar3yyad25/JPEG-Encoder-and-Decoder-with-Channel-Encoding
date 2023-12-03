@@ -8,7 +8,7 @@ from itertools import chain
 def main():
     image_path = 'image.jpeg'
     image = read_image(image_path)
-    blocks = image_blocks(image)
+    blocks = image_blocks(image)[0]
     number_of_blocks = len(blocks)
     
     #Applying DCT to each block
@@ -21,7 +21,6 @@ def main():
     
     #using zigzag indices to flatten each matrix into a vector and store all vectors in a list
     vectors = convert_2d_to_1d(blocks)
-    print ("Vectors: ", vectors[1000])
     #Run length encoding
     encoded_vectors = run_length_encoding(vectors)
     #Huffman encoding
@@ -48,7 +47,17 @@ def main():
 
     #Dequantization
     decoded_blocks = Dequantization(decoded_blocks, compression)
-    print ("Decoded blocks: ", decoded_blocks[1000])
+
+    #Applying inverse DCT to each block
+    for i in range (len(decoded_blocks)):
+        decoded_blocks[i] = inverse_dct_2d(decoded_blocks[i])
+
+    #reconstructing the image, gathering all 8x8 blocks into one image by the height and width of the original image
+
+    reconstruct_image(decoded_blocks, image)
+
+    
+
 
 if __name__ == '__main__':
     main()
