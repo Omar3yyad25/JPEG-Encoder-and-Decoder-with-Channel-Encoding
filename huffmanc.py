@@ -28,7 +28,6 @@ class Huffman:
         
       
     def create_table(self):
-        print(len(self.nodes))
         while len(self.nodes) > 1:  
             left = heapq.heappop(self.nodes) 
             right = heapq.heappop(self.nodes) 
@@ -54,7 +53,6 @@ class Huffman:
                     counter +=1
             for element in freq_dict:
                 freq_dict[element] = freq_dict[element] / counter
-            print(freq_dict)
             return freq_dict
 
 def printNodes(self, node, val=''): 
@@ -69,5 +67,5 @@ def printNodes(self, node, val=''):
         printNodes(self, node.right, newVal) 
 
     if(not node.left and not node.right): 
-        print(f"{node.symbol} -> {newVal}")
+        #print(f"{node.symbol} -> {newVal}")
         self.table[newVal] = node.symbol

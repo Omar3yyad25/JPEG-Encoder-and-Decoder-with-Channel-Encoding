@@ -54,12 +54,11 @@ def main():
     vectors = convert_2d_to_1d(blocks)
     #Run length encoding
     encoded_vectors = run_length_encoding(vectors)
-    
     f = Huffman(list(chain.from_iterable(encoded_vectors)))
-    
-    encoded_data = huffman_encode(encoded_data , f.table)
-    decoded_result = huffman_decode(encoded_data, f.table)
 
+    encoded_data = huffman_encode(list(chain.from_iterable(encoded_vectors)) , f.table)
+    decoded_result = huffman_decode(encoded_data, f.table)
+    print(decoded_result)
 
                 
 if __name__ == '__main__':

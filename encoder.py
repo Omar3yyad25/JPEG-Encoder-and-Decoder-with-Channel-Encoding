@@ -73,10 +73,10 @@ def run_length_encoding(vectors):
                 if count != 0:
                     encoded_vector.append(0)
                     encoded_vector.append(count)
-                    encoded_vector.append(vectors[i][j])
+                    encoded_vector.append(int(vectors[i][j]))
                     count = 0
                 else:
-                    encoded_vector.append(vectors[i][j])
+                    encoded_vector.append(int(vectors[i][j]))
         if (count != 0 ):
             encoded_vector.append(0)
             encoded_vector.append(count)
