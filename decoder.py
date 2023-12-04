@@ -46,16 +46,23 @@ def inverse_dct_2d(dequantized_block):
 
     return idct_matrix
 
-def reconstruct_image(decoded_blocks, image):
-    reconstructed_image = np.zeros((image.shape[0]+5, image.shape[1]+5))
+def calculate_padding(image):
+    height, width = image.shape
+    padding_width = 0 if width % 8 == 0 else 8 - (width % 8)
+    return padding_width
+
+def reconstruct_image(decoded_blocks, image, padding):
+    reconstructed_image = np.zeros((image.shape[0]+padding, image.shape[1]+padding))
     index = 0
     for i in range (0, image.shape[0], 8):
         for j in range (0, image.shape[1], 8):
             reconstructed_image[i:i+8, j:j+8] = decoded_blocks[index]
             index += 1
-    #saving the reconstructed image
-    print ("Image reconstructed successfully")
-    plt.imshow(reconstructed_image, cmap='gray')
+    squeezed_image = np.squeeze(reconstructed_image)
+
+    # Saving the reconstructed image
+    print("Image reconstructed successfully")
+    plt.imshow(squeezed_image, cmap='gray')
     plt.show()
 
        

@@ -4,11 +4,12 @@ from huffmanc import *
 from huffmandecoder import huffman_decode
 from huffencoder import huffman_encode
 from itertools import chain
+import sys
 
 def main():
     image_path = 'image.jpeg'
     image = read_image(image_path)
-    blocks = image_blocks(image)[0]
+    blocks = image_blocks(image)
     number_of_blocks = len(blocks)
     
     #Applying DCT to each block
@@ -26,7 +27,8 @@ def main():
     #Huffman encoding
     f = Huffman(list(chain.from_iterable(encoded_vectors)))
     encoded_data = huffman_encode(list(chain.from_iterable(encoded_vectors)) , f.table)
-
+    #print compression ratio
+    print("Compression ratio is: ",  len(encoded_data)/ sys.getsizeof(image))
     #Huffman decoding
     decoded_result = huffman_decode(encoded_data, f.table)
     #Run length decoding
@@ -52,9 +54,11 @@ def main():
     for i in range (len(decoded_blocks)):
         decoded_blocks[i] = inverse_dct_2d(decoded_blocks[i])
 
-    #reconstructing the image, gathering all 8x8 blocks into one image by the height and width of the original image
+    #getting the padding value 
+    padding = calculate_padding(image)
 
-    reconstruct_image(decoded_blocks, image)
+    #reconstructing the image, gathering all 8x8 blocks into one image by the height and width of the original image
+    reconstruct_image(decoded_blocks, image, padding )
 
     
 
