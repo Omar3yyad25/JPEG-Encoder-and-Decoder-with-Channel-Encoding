@@ -1,8 +1,8 @@
 import numpy as np
 
 def viterbi_decoder(encoded_sequence):
-    K = 3  # Update with your constraint length
-    rate = 1/2  # Update with your code rate
+    K = 3  
+    rate = 1/2  
     num_registers = K - 1
     iteration = len(encoded_sequence) - num_registers
     num_parities = int(1/rate)
@@ -48,11 +48,6 @@ def traceback(parities):
 
     return decoded_sequence
 
-# Example Usage:
-# Replace 'your_encoded_sequence' with your actual encoded sequence
-encoded_sequence = '110110100101'  # Update with your encoded sequence
-decoded_result = viterbi_decoder(encoded_sequence)
-print("Decoded Sequence:", decoded_result)
 
 
 
