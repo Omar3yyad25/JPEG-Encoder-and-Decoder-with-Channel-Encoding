@@ -1,0 +1,60 @@
+import numpy as np
+
+def viterbi_decoder(encoded_sequence):
+    K = 3  # Update with your constraint length
+    rate = 1/2  # Update with your code rate
+    num_registers = K - 1
+    iteration = len(encoded_sequence) - num_registers
+    num_parities = int(1/rate)
+
+    registers_occupation = ""
+    parities = []
+
+    for i in range(iteration):
+        registers_occupation = encoded_sequence[i:num_registers + i + 1]
+        parities.append(createParities(registers_occupation))
+
+    decoded_sequence = traceback(parities)
+
+    return decoded_sequence
+
+def createP1(x):
+    if int(x[1]) + int(x[0]) > 1:
+        return 0
+    else:
+        return 1
+
+def createP2(x):
+    return int(x[1])
+
+def createP3(x):
+    if int(x[2]) + int(x[0]) > 1:
+        return 0
+    else:
+        return 1
+
+def createParities(registers_occupation):
+    p1 = createP1(registers_occupation)
+    p2 = createP2(registers_occupation)
+    p3 = createP3(registers_occupation)
+
+    return [p1, p2, p3]
+
+def traceback(parities):
+    decoded_sequence = []
+    for parity_set in parities:
+        decoded_bit = parity_set[0]  # Assuming p1 is the decoded bit
+        decoded_sequence.append(decoded_bit)
+
+    return decoded_sequence
+
+# Example Usage:
+# Replace 'your_encoded_sequence' with your actual encoded sequence
+encoded_sequence = '110110100101'  # Update with your encoded sequence
+decoded_result = viterbi_decoder(encoded_sequence)
+print("Decoded Sequence:", decoded_result)
+
+
+
+
+
