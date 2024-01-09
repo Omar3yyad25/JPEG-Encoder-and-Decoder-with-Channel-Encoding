@@ -54,6 +54,13 @@ def main():
     for i in range (len(decoded_blocks)):
         decoded_blocks[i] = inverse_dct_2d(decoded_blocks[i])
 
+    encoded_bits = []
+
+    for i in range(0, len(decoded_vectors), 64):
+        input_block = list(chain.from_iterable(decoded_vectors[i:i+64]))
+        encoder = convEncoder(3, 1/3, input_block)
+        encoded_bits.extend(list(chain.from_iterable(encoder.parities)))
+
     #getting the padding value 
     padding = calculate_padding(image)
 
