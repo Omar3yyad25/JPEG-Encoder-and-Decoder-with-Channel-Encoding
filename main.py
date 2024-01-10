@@ -5,8 +5,14 @@ from huffmandecoder import huffman_decode
 from huffencoder import huffman_encode
 from itertools import chain
 import sys
+import random
+from convEncoder import *
+from veterbi import *
+
+
 
 def main():
+ 
     image_path = 'image.jpeg'
     image = read_image(image_path)
     blocks = image_blocks(image)
@@ -61,7 +67,26 @@ def main():
     reconstruct_image(decoded_blocks, image, padding )
 
     
+#       g1(x) = 1 + x, represented in binary as b011 = 3
+#       g2(x) = 1 + x + x^2, represented in binary as b111 = 7
+#       g3(x) = 1 + x^2 + x^3, represented in binary as b1101 = 13
+conv = ConvolutionalCode((3, 7, 13))
+
+# encoding a byte stream
+input_bytes = b"\x72\x01"
+encoded = conv.encode(input_bytes)
+print(encoded == [0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1])
 
 
+# introduced five random bit flips
+corrupted = encoded.copy()
+for _ in range(5):
+    idx = random.randint(0, len(encoded) - 1)
+    corrupted[idx] = int(not (corrupted[idx]))
+decoded, corrected_errors = decode(conv,corrupted)
+
+print(decoded == input_bytes)
+print(corrected_errors)
 if __name__ == '__main__':
     main()
