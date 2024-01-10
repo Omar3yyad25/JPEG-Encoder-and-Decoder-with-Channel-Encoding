@@ -9,6 +9,13 @@ class convEncoder:
         self.registersoccupation = ""
         self.parities = []
         self.work()
+        # convert parities to stream of bit and append it to new variable called output
+        self.output = ""
+        for i in range(len(self.parities)):
+            for j in range(len(self.parities[i])):
+                self.output += str(self.parities[i][j])
+        #print(self.output)
+        #return self.output
 
     def createP1(self,x):
         if int(x[1]) + int(x[0]) > 1:
@@ -37,9 +44,7 @@ class convEncoder:
         return [p1, p2, p3]
 
     def work(self):
-        
         for i in range(self.iteration):
             self.registersoccupation = self.input[i:self.numRegisters + i+1]
             self.parities.append( self.createParities())
-        print(self.parities)
 
