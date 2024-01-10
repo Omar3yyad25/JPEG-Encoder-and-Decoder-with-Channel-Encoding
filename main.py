@@ -35,21 +35,36 @@ def main():
     f = Huffman(list(chain.from_iterable(encoded_vectors)))
     encoded_data = huffman_encode(list(chain.from_iterable(encoded_vectors)) , f.table)
     #convolutional encoding
-    convolved_data = convEncoder(3, 1/3, encoded_data).output
+    conv = ConvolutionalCode((3, 7, 13))
+
+    # encoding a byte stream
+    input_bytes = b"\x72\x01"
+    encoded = conv.encode(input_bytes)
 
     #modulate the convolutional encoded data using BPSK and add AWGN noise
-    modulated_data = bpsk_modulation(str(convolved_data), 1, 10, 1000)
+    modulated_data = bpsk_modulation(str(encoded), 1, 10, 1000)
     noisy_signal = add_awgn(modulated_data, 10)
 
     #demodulate the noisy signal
     demodulated_data = bpsk_demodulation(noisy_signal, 1, 10, 1000)
 
     #plot the BER vs SNR
-    plotting_snr_vs_ber(str(convolved_data), modulated_data, noisy_signal, demodulated_data)
+    plotting_snr_vs_ber(str(encoded), modulated_data, noisy_signal, demodulated_data)
 
     # #Viterbi decoding
-    deconvolved_data = viterbi_decoder(demodulated_data)
+    print(encoded == [0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1])
+# introduced five random bit flips
+    corrupted = encoded.copy()
+    for _ in range(5):
+        idx = random.randint(0, len(encoded) - 1)
+        corrupted[idx] = int(not (corrupted[idx]))
+    decoded, corrected_errors = decode(conv,corrupted)
 
+    
+    deencoded = decode(conv,demodulated_data)
+    print(decoded == input_bytes)
+    print(corrected_errors)
 
     # #print compression ratio
     # print("Compression ratio is: ",  len(encoded_data)/ sys.getsizeof(image))
@@ -88,21 +103,6 @@ def main():
 #       g1(x) = 1 + x, represented in binary as b011 = 3
 #       g2(x) = 1 + x + x^2, represented in binary as b111 = 7
 #       g3(x) = 1 + x^2 + x^3, represented in binary as b1101 = 13
-conv = ConvolutionalCode((3, 7, 13))
 
-# encoding a byte stream
-input_bytes = b"\x72\x01"
-encoded = conv.encode(input_bytes)
-print(encoded == [0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1])
-# introduced five random bit flips
-corrupted = encoded.copy()
-for _ in range(5):
-    idx = random.randint(0, len(encoded) - 1)
-    corrupted[idx] = int(not (corrupted[idx]))
-decoded, corrected_errors = decode(conv,corrupted)
-
-print(decoded == input_bytes)
-print(corrected_errors)
 if __name__ == '__main__':
     main()
