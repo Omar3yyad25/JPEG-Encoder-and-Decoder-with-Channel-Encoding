@@ -1,6 +1,7 @@
 import math
 from TrellisPath import *
 
+
 class ConvolutionalCode:
     """The code assumes zero state termination, and k=1"""
     def __init__(self, generators: tuple):
@@ -37,7 +38,6 @@ class ConvolutionalCode:
                     lsr = (current_input << self.constraint_length) + current_state
                     generator_masked_sum_arg = bit_reversed_fwd & (lsr)  # mask input and state with fwd
                     tmp.append(bin(generator_masked_sum_arg).count("1") % 2)  # sum bit mod 2 (XOR)
-
                 self.out_bits[current_state][current_input] = tuple(tmp)
 
     def encode(self, data: bytes) -> list[int]:
